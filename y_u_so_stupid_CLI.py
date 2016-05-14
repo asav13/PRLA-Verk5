@@ -5,39 +5,36 @@ from y_u_so_stupid import getRandomQuestion
 def playCLI():
     score = 0
     
-    print("Welcome to 'y u so stupid?'")
-    print("Now don't be stupid mkey?\n")
-    print('Are you ready?')
-    print('...')
-    sys.stdout.flush()
+    printAndFlush("~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
 
     for i in range(10):
         question = json.loads(getRandomQuestion())
 
-        print(question['question'])
-        sys.stdout.flush()
+        printAndFlush(question['question'])
         
         for c in question['choices']:
-            print(question['choices'].index(c),c)
-            sys.stdout.flush()
+            printAndFlush("{0}: {1}".format(question['choices'].index(c), c))
             
         playerAnswer = input()
         
         while playerAnswer not in ['0','1','2','3']:
-            print('Y u so stupid? Please enter a valid choice: 0, 1, 2 or 3')
-            sys.stdout.flush()
+            printAndFlush('y u so stupid..? Please enter a valid choice: 0, 1, 2 or 3')
             playerAnswer = input()
+
+        printAndFlush("")
         
         if int(playerAnswer) == question['choices'].index(question['answer']):
-            print("CORRECT")
-            sys.stdout.flush()
+            printAndFlush("CORRECT\n")
             score += 10
             
         else:
-            print("WRONG... y u so stupid?")
-            print('Answer: ', question['answer'])
-            sys.stdout.flush()
-        print()
+            printAndFlush("WRONG... y u so stupid?\nAnswer: {0}\n".format(question['answer']))
         
-    print("Your score is: ", score,"/ 100")
+    printAndFlush("Your score is: {0}/100".format(score))
+
+def printAndFlush(string):
+    print(string)
     sys.stdout.flush()
+
+
+

@@ -5,9 +5,8 @@ import sys
 from bs4 import BeautifulSoup as BS
 from random import choice
 import sys
+import json
 
-
-print(sys.stdout.isatty())
 BASE_PATH       = os.path.dirname(__file__)
 
 DATA_FILE       = os.path.join(BASE_PATH,'data.txt')
@@ -22,7 +21,6 @@ movies          = []
 actorsPool      = []
 directorsPool   = []
 yearsPool       = []
-player = {}
 
 def getActorPool():
     actors = set()
@@ -58,7 +56,6 @@ def init():
     global actorsPool
     global directorsPool
     global yearsPool
-    global player
 
     try:
         file    = open(DATA_FILE)
@@ -96,10 +93,6 @@ def init():
         yearsPool   = getYearPool()
         file.write(str(yearsPool))
         file.close()
-    
-    player['nr']    = 1     # Hardcoded for now. Multiplayer ??
-    player['score'] = 0
-
 
 def getMovies():
     response    = requests.get(IMDB_LIST, headers = {'accept-language': 'en-US, en'})
@@ -147,7 +140,11 @@ def getActorsAndDirector(link):
     director = (soup.find('span', {"itemprop": "director"})).find('span', {"itemprop":"name"}).text
     return actors,director
 
-def randomQuestion():
+def getRandomQuestion():
+    if not (movies and actorsPool and directorsPool and yearsPool):
+        init()  # Making sure everything is set up, none of these
+                # variables should be empty
+    
     # Get random movie
     movie        = choice(movies)
     group        = {'a': ['actors',actorsPool, 'Who of the following starred in {0}?'],
@@ -167,36 +164,7 @@ def randomQuestion():
         choices.append(choice(pool))
         
     choices.insert(choice(range(3)), correctAnswer)
+    return json.dumps({'question':group[questionType][2].format(movie['title']),
+            'choices': choices,
+            'answer': correctAnswer})
 
-    print(group[questionType][2].format(movie['title']))
-        
-    for a in choices:
-        print(choices.index(a),a)
-        
-    playerAnswer = input()
-    while playerAnswer not in ['0','1','2','3']:
-        print('Y u so stupid? Please enter a valid choice: 0, 1, 2 or 3')
-        playerAnswer = input()
-        
-    if int(playerAnswer) == choices.index(correctAnswer):
-        print("CORRECT")
-        player['score'] += 10
-        sys.stdout.flush()
-    else:
-        print("WRONG... y u so stupid?")
-        print('Answer: ', correctAnswer)
-        sys.stdout.flush()
-
-def play():
-    init()
-    print("Welcome to 'y u so stupid?'")
-    print("Now don't be stupid mkey?\n")
-
-    print('Are you ready?')
-    print('...')
-    
-
-    for i in range(10):
-        randomQuestion()
-        print()
-    print("Your score is: ", player['score'],"/ 100")
