@@ -6,77 +6,94 @@ from bs4 import BeautifulSoup as BS
 from random import choice
 import sys
 
-DATA            = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni\PRLA-Verk5\data.txt"
-ACTORS          = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni\PRLA-Verk5\actors.txt"
-DIRECTORS       = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni\PRLA-Verk5\directors.txt"
+DATA_FILE       = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\data.txt"
+ACTORS_FILE     = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\actors.txt"
+DIRECTORS_FILE  = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\directors.txt"
+YEARS_FILE      = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\years.txt"
 IMDB_LIST       = r"http://www.imdb.com/chart/top?ref_=nv_mv_250_6"
 IMDB_BASE_URL   = r"http://www.imdb.com"
 
-movies      = []
-actors      = []
-directors   = []
+movies          = []
+actorsPool      = []
+directorsPool   = []
+yearsPool       = []
 player = {}
 
-def getActorsBase():
+def getActorPool():
     actors = set()
     
     for m in movies:
-        for a in getActors(m['link']):
+        for a in getActorsForMovie(m['link']):
             actors.add(a)
         if len(actors) >= 100:
             break
         
     return list(actors)
 
-def getDirectorsBase():
+def getDirectorPool():
     directors = set()
     
     for m in movies:
-        directors.add(getDirector(m['link']))
+        directors.add(getDirectorForMovie(m['link']))
         if len(directors) >= 100:
             break
         
     return list(directors)
 
+def getYearPool():
+    years = set()
+    
+    for m in movies:
+        years.add(m['year'])
+        
+    return list(years)
+
 def init():
     global movies
-    global actors
-    global directors
+    global actorsPool
+    global directorsPool
+    global yearsPool
     global player
 
     try:
-        file    = open(DATA)
+        file    = open(DATA_FILE)
         movies  = eval(file.read())
         file.close()
     except FileNotFoundError:
-        file    = open(DATA, 'w')
+        file    = open(DATA_FILE, 'w')
         movies  = getMovies()
         file.write(str(movies))
         file.close()
 
     try:
-        file    = open(ACTORS)
-        actors  = list(eval(file.read()))
+        file        = open(ACTORS_FILE)
+        actorsPool  = list(eval(file.read()))
     except FileNotFoundError:
-        file    = open(ACTORS, 'w')
-        actors  = getActorsBase()
-        file.write(str(actors))
+        file        = open(ACTORS_FILE, 'w')
+        actorsPool  = getActorPool()
+        file.write(str(actorsPool))
         file.close()
 
     try:
-        file        = open(DIRECTORS)
-        directors   = list(eval(file.read()))
+        file            = open(DIRECTORS_FILE)
+        directorsPool   = list(eval(file.read()))
     except FileNotFoundError:
-        file        = open(DIRECTORS, 'w')
-        directors   = getDirectorsBase()
-        file.write(str(directors))
+        file            = open(DIRECTORS_FILE, 'w')
+        directorsPool   = getDirectorPool()
+        file.write(str(directorsPool))
         file.close()
     
+    try:
+        file            = open(YEARS_FILE)
+        yearsPool   = list(eval(file.read()))
+    except FileNotFoundError:
+        file            = open(YEARS_FILE, 'w')
+        yearsPool   = getYearPool()
+        file.write(str(yearsPool))
+        file.close()
     
-    player['nr']    = 1
+    player['nr']    = 1     # Hardcoded for now. Multiplayer ??
     player['score'] = 0
-
-
 
 
 def getMovies():
@@ -87,15 +104,32 @@ def getMovies():
     
     for line in soup.findAll('td', {"class": "titleColumn"}):
         m = dict()
-        m['link']       = IMDB_BASE_URL + line.find('a').attrs['href']
-        m['title']      = line.find('a').text
-        m['year']       = (line.find('span').text)[1:-1]
-        #m['actors'],m['director']     = getActorsAndDirector(m['link'])
-        #m['director']   = getDirector(m['link'])
+        m['link']                   = IMDB_BASE_URL + line.find('a').attrs['href']
+        m['title']                  = line.find('a').text
+        m['year']                   = (line.find('span').text)[1:-1]
+        m['actors'],m['director']   = getActorsAndDirector(m['link'])
         
+
         movieList.append(m)
 
     return movieList
+
+def getActorsForMovie(link):
+    text    = requests.get(link).text
+    soup    = BS(text, 'html.parser')
+    actors  = []
+
+    for line in soup.findAll('span', {"itemprop": "actors"}):
+        name = line.find('span',{"itemprop":"name"}).text
+        actors.append(name)
+        
+    return actors
+
+def getDirectorForMovie(link):
+    text    = requests.get(link).text
+    soup    = BS(text, 'html.parser')
+
+    return (soup.find('span', {"itemprop": "director"})).find('span', {"itemprop":"name"}).text
 
 def getActorsAndDirector(link):
     text    = requests.get(link).text
@@ -109,101 +143,61 @@ def getActorsAndDirector(link):
     director = (soup.find('span', {"itemprop": "director"})).find('span', {"itemprop":"name"}).text
     return actors,director
 
-def getActors(link):
-    text    = requests.get(link).text
-    soup    = BS(text, 'html.parser')
-    actors  = []
-
-    for line in soup.findAll('span', {"itemprop": "actors"}):
-        name = line.find('span',{"itemprop":"name"}).text
-        actors.append(name)
-        
-    return actors
-
-def getDirector(link):
-    text    = requests.get(link).text
-    soup    = BS(text, 'html.parser')
-
-    return (soup.find('span', {"itemprop": "director"})).find('span', {"itemprop":"name"}).text
-
 def randomQuestion():
-    movie = choice(movies)
-
-    q = choice(['a','d','y','a','d','y','a','d','y'])
-    actorChoices = []
-    directorChoices= []
-    years = []
-
+    # Get random movie
+    movie        = choice(movies)
+    group        = {1: ['actors',actorsPool, 'Who of the following starred in %s?'],
+                    2: ['director',directorsPool, 'Who was the director of %s?'],
+                    3: ['year',yearsPool, 'When was the movie %s premeried?']}
+    choices      = []
+    questionType = choice([1,2,3])   # a for actor, d for director, y for year
+                                           # guessing actor/director is more fun..heh..
+    if questionType == 1:
+        correctAnswer = (movie[group[questionType][0]])[0]
+    else:
+        correctAnswer = movie[group[questionType][0]]
+        
     for i in range(3):
-        if q == 'a':
-            actorChoices.append(choice(actors))
-        if q == 'd':
-            directorChoices.append(choice(directors))
-        if q == 'y':
-            m = choice(movies)
-            years.append(m['year'])
-            years.append(int(m['year']) - choice(range(5,12)))
-            break
+        choices.append(choice(group[questionType][1]))
+        
+    choices.insert(choice(range(3)), correctAnswer)
 
-    ind = choice(range(3))
+    print(group[questionType][2] % movie['title'])
+        
+    for a in choices:
+        print(choices.index(a),a)
+        
+
+    playerAnswer = -1
+    while playerAnswer < 0 or playerAnswer > 3:
+        try:
+            playerAnswer = input()
+            playerAnswer = int(playerAnswer)
+        except ValueError:
+            print('Please enter a valid choice: 0, 1, 2 or 3')
+            continue
+        if playerAnswer < 0 or playerAnswer > 3:
+            print('Please enter a valid choice: 0, 1, 2 or 3')
+    
+    if int(playerAnswer) == choices.index(correctAnswer):
+        print("CORRECT")
+        player['score'] += 10
+        sys.stdout.flush()
+    else:
+        print("WRONG... y u so stupid?")
+        print('Answer: ', correctAnswer)
+        sys.stdout.flush()
+
+def play():
+    
+    print("Welcome to 'y u so stupid?'")
+    print("Now don't be stupid mkey?\n")
+
     print('Are you ready?')
     print('...')
-    sys.stdout.flush()
-    if q == 'a':
-        movie['actors'] = getActors(movie['link'])
-        actorChoices.insert(ind, movie['actors'][0])
-        print('Which one of the following starred in', movie['title'], '?')
-
-        for a in actorChoices:
-            print(actorChoices.index(a),a)
-        
-        answer = input()
-        if int(answer) == actorChoices.index(movie['actors'][0]):
-            print("CORRECT")
-            player['score'] += 10
-            sys.stdout.flush()
-        else:
-            print("WRONG")
-            print(movie['actors'][0])
-            sys.stdout.flush()
-        
-    if q == 'd':
-        movie['director'] = getDirector(movie['link'])
-        directorChoices.insert(ind, movie['director'])
-        
-        print('Who is the director of', movie['title'], '?')
-        for d in directorChoices:
-            print(directorChoices.index(d),d)
-
-        answer = input()
-        if int(answer) == directorChoices.index(movie['director']):
-            print("CORRECT")
-            player['score'] += 10
-            sys.stdout.flush()
-        else:
-            print("WRONG")
-            print(movie['director'])
-            sys.stdout.flush()
-        
-    if q == 'y':
-        years.append(int(movie['year']) - choice(range(8,12)))
-        years.insert(ind, movie['year'])    
-        print('When was the movie', movie['title'], ' premiered?')
-        for y in years:
-            print(years.index(y),y)
-        answer = input()
-        if int(answer) == years.index(movie['year']):
-            print("CORRECT")
-            player['score'] += 10
-            sys.stdout.flush()
-        else:
-            print("WRONG")
-            print(movie['year'])
-            sys.stdout.flush()
-   
-init()
-for i in range(10):
-    randomQuestion()
-    print()
-print("Your score is: ", player['score'])
     
+    init()
+    for i in range(10):
+        randomQuestion()
+        print()
+    print("Your score is: ", player['score'],"/ 100")
