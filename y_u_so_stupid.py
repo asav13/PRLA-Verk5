@@ -1,15 +1,20 @@
 from pprint import pprint
-import requests; 
+import requests
 import os
 import sys
 from bs4 import BeautifulSoup as BS
 from random import choice
 import sys
 
-DATA_FILE       = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\data.txt"
-ACTORS_FILE     = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\actors.txt"
-DIRECTORS_FILE  = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\directors.txt"
-YEARS_FILE      = r"C:\Users\asabj\Dropbox\Skúl\PRLA\Verkefni 5\PRLA-Verk5\years.txt"
+
+print(sys.stdout.isatty())
+BASE_PATH       = os.path.dirname(__file__)
+
+DATA_FILE       = os.path.join(BASE_PATH,'data.txt')
+ACTORS_FILE     = os.path.join(BASE_PATH,'actors.txt')
+DIRECTORS_FILE  = os.path.join(BASE_PATH,'directors.txt')
+YEARS_FILE      = os.path.join(BASE_PATH,'years.txt')
+
 IMDB_LIST       = r"http://www.imdb.com/chart/top?ref_=nv_mv_250_6"
 IMDB_BASE_URL   = r"http://www.imdb.com"
 
@@ -84,10 +89,10 @@ def init():
         file.close()
     
     try:
-        file            = open(YEARS_FILE)
+        file        = open(YEARS_FILE)
         yearsPool   = list(eval(file.read()))
     except FileNotFoundError:
-        file            = open(YEARS_FILE, 'w')
+        file        = open(YEARS_FILE, 'w')
         yearsPool   = getYearPool()
         file.write(str(yearsPool))
         file.close()
@@ -109,7 +114,6 @@ def getMovies():
         m['year']                   = (line.find('span').text)[1:-1]
         m['actors'],m['director']   = getActorsAndDirector(m['link'])
         
-
         movieList.append(m)
 
     return movieList
@@ -146,39 +150,34 @@ def getActorsAndDirector(link):
 def randomQuestion():
     # Get random movie
     movie        = choice(movies)
-    group        = {1: ['actors',actorsPool, 'Who of the following starred in %s?'],
-                    2: ['director',directorsPool, 'Who was the director of %s?'],
-                    3: ['year',yearsPool, 'When was the movie %s premeried?']}
+    group        = {'a': ['actors',actorsPool, 'Who of the following starred in {0}?'],
+                    'd': ['director',directorsPool, 'Who was the director of {0}?'],
+                    'y': ['year',yearsPool, 'When was the movie {0} premeried?']}
+    
     choices      = []
-    questionType = choice([1,2,3])   # a for actor, d for director, y for year
-                                           # guessing actor/director is more fun..heh..
-    if questionType == 1:
-        correctAnswer = (movie[group[questionType][0]])[0]
+    questionType = choice(['a','d','y'])   # a for actor, d for director, y for year
+                                           
+    if questionType == 'a':
+        correctAnswer = choice(movie[group[questionType][0]])
     else:
         correctAnswer = movie[group[questionType][0]]
         
     for i in range(3):
-        choices.append(choice(group[questionType][1]))
+        pool = list(set(group[questionType][1]) - set(movie[group[questionType][0]]))
+        choices.append(choice(pool))
         
     choices.insert(choice(range(3)), correctAnswer)
 
-    print(group[questionType][2] % movie['title'])
+    print(group[questionType][2].format(movie['title']))
         
     for a in choices:
         print(choices.index(a),a)
         
-
-    playerAnswer = -1
-    while playerAnswer < 0 or playerAnswer > 3:
-        try:
-            playerAnswer = input()
-            playerAnswer = int(playerAnswer)
-        except ValueError:
-            print('Please enter a valid choice: 0, 1, 2 or 3')
-            continue
-        if playerAnswer < 0 or playerAnswer > 3:
-            print('Please enter a valid choice: 0, 1, 2 or 3')
-    
+    playerAnswer = input()
+    while playerAnswer not in ['0','1','2','3']:
+        print('Y u so stupid? Please enter a valid choice: 0, 1, 2 or 3')
+        playerAnswer = input()
+        
     if int(playerAnswer) == choices.index(correctAnswer):
         print("CORRECT")
         player['score'] += 10
@@ -189,14 +188,14 @@ def randomQuestion():
         sys.stdout.flush()
 
 def play():
-    
+    init()
     print("Welcome to 'y u so stupid?'")
     print("Now don't be stupid mkey?\n")
 
     print('Are you ready?')
     print('...')
     
-    init()
+
     for i in range(10):
         randomQuestion()
         print()
