@@ -1,26 +1,25 @@
 import sys
 import json
-from y_u_so_stupid import getRandomQuestion
-
+import y_u_so_stupid
+import time
 def playCLI():
     score = 0
     
     printAndFlush("~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
 
     for i in range(10):
-        question = json.loads(getRandomQuestion())
+        question = json.loads(y_u_so_stupid.getRandomQuestion())
 
         printAndFlush(question['question'])
         
         for c in question['choices']:
             printAndFlush("{0}: {1}".format(question['choices'].index(c), c))
-            
+    
         playerAnswer = input()
         
         while playerAnswer not in ['0','1','2','3']:
             printAndFlush('y u so stupid..? Please enter a valid choice: 0, 1, 2 or 3')
             playerAnswer = input()
-
         printAndFlush("")
         
         if int(playerAnswer) == question['choices'].index(question['answer']):
@@ -36,5 +35,24 @@ def printAndFlush(string):
     print(string)
     sys.stdout.flush()
 
-
-
+def timer():
+    seconds = 10
+    print(10)
+    while True:
+        if sys.stdin:
+            playerAnswer = sys.stdin.readline().strip()
+            if playerAnswer not in ['0','1','2','3']:
+                printAndFlush('?!y u so stupid..? Please enter a valid choice: 0, 1, 2 or 3')
+            else:
+                return playerAnswer
+        else:
+            print('nada')
+        time.sleep(0.999)
+        seconds -= 1
+        
+        if seconds == 5:
+            print(5)
+        if seconds == 0:
+            print("TIME UP")
+            return -1
+        playerAnswer = input()

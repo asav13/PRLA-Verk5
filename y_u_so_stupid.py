@@ -167,4 +167,3 @@ def getRandomQuestion():
     return json.dumps({'question':group[questionType][2].format(movie['title']),
             'choices': choices,
             'answer': correctAnswer})
-
