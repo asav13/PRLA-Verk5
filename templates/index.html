@@ -5,15 +5,27 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css"/>
 </head>
 <body>
-    <p>{{question}}</p>
-    <form action="." method="POST">
-    {% for choice in choices %}
-        <input type="radio" name="answer" value="{{choice}}">{{choice}}<br>
-    {% endfor %}
+    <div id="background"></div>
 
+    <div class="game">
+        <div class="question">
+            <p>{{question}}</p>
+        </div>
+        <div class="main">
+            <span class="answers">
+                <form action="." method="POST" name="answer">
+                    <ul>
+                    {% for choice in choices %}
+                        <li><input type="submit" name="answer" value="{{choice}}" class="ans"></li>
+                    {% endfor %}
+                    </ul>
+                </form>
+            </span>
+        </div>
+    </div>
     
-        <input type="submit" name="answer" id="submitButton">
-    </form>
-
+    <div id="score">
+        <p>{{score}}</p>
+    </div>
 </body>
 </html>

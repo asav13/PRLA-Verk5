@@ -1,7 +1,68 @@
-body {
-	background-color: #ff6622;
+#background {
+	background-image: url(http://www.tattooshunt.com/images/67/camera-film-reel-tattoo-stencil.jpg);
+	width: 100%;
+	top: 0;
+	left: 0;
+	height:100%; 
+	opacity: 0.1;
+	position: fixed;
+	background-size: 100% auto;
+	background-repeat: no-repeat;
 }
 
-#submitButton {
-	visibility: hidden;
+ul>li {
+	list-style: none;
+	margin: 0.2em;
+}
+
+input[type=submit] {
+	width: 16em;
+	height: 2em;
+	font-size: 1em;
+	border-radius: 25em 25em 25em 25em;
+}
+
+input[type=submit]:hover {
+	background-color: 	#abb5ba;
+}
+
+.question {
+	font-size: 2.5em;
+	text-align: center;
+}
+
+.main {
+	text-align: center;
+}
+
+#score {
+	font-size: 5em;
+	right: 50em;
+	text-align: right;
+}
+
+.game {
+	position: absolute;
+	width: 700px;
+	height: 450px;
+	top: 50%;
+	left: 50%;
+	margin: -225px 0 0 -350px;
+}
+
+.gameFail {
+	position: absolute;
+	width: 700px;
+	height: 450px;
+	top: 40%;
+	left: 50%;
+	margin: -225px 0 0 -350px;
+}
+
+#failedMessage {
+	font-size: 3em;
+}
+
+#scoreHighscore {
+	font-size: 1.5em;
 }
