@@ -147,9 +147,9 @@ def getRandomQuestion():
     
     # Get random movie
     movie        = choice(movies)
-    group        = {'a': ['actors',actorsPool, 'Who of the following starred in {0}?'],
-                    'd': ['director',directorsPool, 'Who was the director of {0}?'],
-                    'y': ['year',yearsPool, 'When was the movie {0} premeried?']}
+    group        = {'a': ['actors', actorsPool, 'Who of the following starred in {0}?'],
+                    'd': ['director', directorsPool, 'Who was the director of {0}?'],
+                    'y': ['year', yearsPool, 'When was the movie {0} premeried?']}
     
     choices      = []
     questionType = choice(['a','d','y'])   # a for actor, d for director, y for year
@@ -158,10 +158,15 @@ def getRandomQuestion():
         correctAnswer = choice(movie[group[questionType][0]])
     else:
         correctAnswer = movie[group[questionType][0]]
-        
+
+    pool    = set(group[questionType][1])
+    exclude = set(movie[group[questionType][0]])
+    pool    = list(pool-exclude)
+
     for i in range(3):
-        pool = list(set(group[questionType][1]) - set(movie[group[questionType][0]]))
-        choices.append(choice(pool))
+        filler = choice(pool)
+        pool.remove(filler)
+        choices.append(filler)
         
     choices.insert(choice(range(3)), correctAnswer)
     return json.dumps({'question':group[questionType][2].format(movie['title']),
