@@ -1,7 +1,9 @@
+import select
 import sys
 import json
 import y_u_so_stupid
 import time
+
 def playCLI():
     score = 0
     
@@ -35,24 +37,5 @@ def printAndFlush(string):
     print(string)
     sys.stdout.flush()
 
-def timer():
-    seconds = 10
-    print(10)
-    while True:
-        if sys.stdin:
-            playerAnswer = sys.stdin.readline().strip()
-            if playerAnswer not in ['0','1','2','3']:
-                printAndFlush('?!y u so stupid..? Please enter a valid choice: 0, 1, 2 or 3')
-            else:
-                return playerAnswer
-        else:
-            print('nada')
-        time.sleep(0.999)
-        seconds -= 1
-        
-        if seconds == 5:
-            print(5)
-        if seconds == 0:
-            print("TIME UP")
-            return -1
-        playerAnswer = input()
+
+
