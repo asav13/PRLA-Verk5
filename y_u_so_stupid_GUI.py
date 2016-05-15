@@ -1,5 +1,3 @@
-from pprint import pprint as pp #del me
-
 try:
     import Tkinter as tk
     from Tkinter import ttk as ttk
@@ -78,7 +76,6 @@ class TriviaGame(tk.Frame):
             
     def play(self):
         self.startButton.grid_remove()
-        print('here')
         for i in range(4):
             b = tk.Button(self,text="",width=20)
             b.grid(row=i+2,column=0, padx=50,pady=5,ipadx=10, ipady=10)
