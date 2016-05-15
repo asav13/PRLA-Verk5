@@ -1,0 +1,7 @@
+body {
+	background-color: #ff6622;
+}
+
+#submitButton {
+	visibility: hidden;
+}

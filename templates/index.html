@@ -1,0 +1,19 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>Y U so stupid?</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+</head>
+<body>
+    <p>{{question}}</p>
+    <form action="." method="POST">
+    {% for choice in choices %}
+        <input type="radio" name="answer" value="{{choice}}">{{choice}}<br>
+    {% endfor %}
+
+    
+        <input type="submit" name="answer" id="submitButton">
+    </form>
+
+</body>
+</html>
