@@ -103,8 +103,9 @@ class TriviaGame(tk.Frame):
             self.questionButtons[i].configure(fg='lightgray')
         
     def exitGame(self):
-        
         exit()
+        
+        
 
 root = tk.Tk()
 root.configure(bd=10, bg='#CCFFFF')
