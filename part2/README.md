@@ -18,15 +18,15 @@ In order for everything to work properly you must have Python3 installed, and so
 -tkinter
 -Flask
 
-to install the packages on a Windows system:
+to install the packages on a Linux system:
 ```
-	py -m pip install bs4
-	py -m pip install requests
-	py -m pip install tkinter
-	py -m pip install Flask
+	pip install bs4
+	pip install requests
+	pip install tkinter
+	pip install flask
 ```
 
-to install the packages on a Linux system you can skip the "py -m" part
+to install the packages on a Windows system simply add "py -m" to the commands above
 
 ### Use the module
 
