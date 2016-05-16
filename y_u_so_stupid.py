@@ -97,7 +97,7 @@ def _getMovies():
     
     for line in soup.findAll('td', {"class": "titleColumn"}):
         m = dict()
-        m['link']                   = IMDB_BASE_URL + line.find('a').attrs['href']
+        m['link']                   = _IMDB_BASE_URL + line.find('a').attrs['href']
         m['title']                  = line.find('a').text
         m['year']                   = (line.find('span').text)[1:-1]
         m['actors'],m['director']   = _getActorsAndDirector(m['link'])
