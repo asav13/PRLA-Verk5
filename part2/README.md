@@ -14,14 +14,19 @@ so we chose all :)
 
 In order for everything to work properly you must have Python3 installed, and some pip packages:
 -bs4
+-requests
 -tkinter
 -Flask
 
+to install the packages on a Windows system:
 ```
 	py -m pip install bs4
+	py -m pip install requests
 	py -m pip install tkinter
 	py -m pip install Flask
 ```
+
+to install the packages on a Linux system you can skip the "py -m" part
 
 ### Use the module
 
