@@ -10,6 +10,7 @@ import argparse
 '''
 parser = argparse.ArgumentParser(description='Y U so stupid!?')
 parser.add_argument('-q', '--questions', help='number of questions to run', type=int, nargs=1)
+parser.add_argument('-d', '--difficulty', help='difficulty,defined by number of choices', type=int, choices=range(2, 10))
 
 args = parser.parse_args()
 
@@ -22,11 +23,15 @@ def playCLI():
         numberOfQuestions = args.questions[0]
     else:
         numberOfQuestions = 10
+    if args.difficulty:
+        difficulty = args.difficulty
+    else:
+        difficulty = 4
     
     printAndFlush("~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
 
     for i in range(numberOfQuestions):
-        question = json.loads(y_u_so_stupid.getRandomQuestion())
+        question = json.loads(y_u_so_stupid.getRandomQuestion(difficulty))
 
         printAndFlush(question['question'])
         

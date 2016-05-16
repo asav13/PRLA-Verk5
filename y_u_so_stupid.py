@@ -140,7 +140,7 @@ def getActorsAndDirector(link):
     director = (soup.find('span', {"itemprop": "director"})).find('span', {"itemprop":"name"}).text
     return actors,director
 
-def getRandomQuestion():
+def getRandomQuestion(nrOfChoices=4):
     if not (movies and actorsPool and directorsPool and yearsPool):
         init()  # Making sure everything is set up, none of these
                 # variables should be empty
@@ -163,7 +163,7 @@ def getRandomQuestion():
     exclude = set(movie[group[questionType][0]])
     pool    = list(pool-exclude)
 
-    for i in range(3):
+    for i in range(nrOfChoices-1):
         filler = choice(pool)
         pool.remove(filler)
         choices.append(filler)
