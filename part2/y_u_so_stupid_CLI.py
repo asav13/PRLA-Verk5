@@ -29,13 +29,16 @@ def playCLI():
         
         for c in question['choices']:
             printAndFlush("{0}: {1}".format(question['choices'].index(c), c))
-    
-        playerAnswer = input()
-        
-        while int(playerAnswer) not in range(difficulty):
-            printAndFlush('y u so stupid..? Please enter a valid choice: {0}'.format(list(range(difficulty))))
+
+        try:
             playerAnswer = input()
-        printAndFlush("")
+            while (not playerAnswer.isnumeric()) or int(playerAnswer) not in range(difficulty):
+                printAndFlush('y u so stupid..? Please enter a valid choice: {0}'.format(list(range(difficulty))))
+                playerAnswer = input()
+            printAndFlush("")
+        except ValueError:
+            printAndFlush("Dude, you pass in crap, y u so stupid? I say bye now!")
+            break
         
         if int(playerAnswer) == question['choices'].index(question['answer']):
             printAndFlush("CORRECT\n")
