@@ -82,7 +82,7 @@ def _init():
     
     try:
         file        = open(_YEARS_FILE)
-        _yearsPool   = list(eval(file.read()))
+        _yearsPool   = list(eval(file.read().encode('ascii', 'ignore')))
     except FileNotFoundError:
         file        = open(_YEARS_FILE, 'w')
         _yearsPool   = _getYearPool()
@@ -167,3 +167,27 @@ def getRandomQuestion(nrOfChoices=4):
     return json.dumps({'question':group[questionType][2].format(movie['title']),
             'choices': choices,
             'answer': correctAnswer})
+
+'''
+    TO BE ABLE TO USE THE MODULE AS A SCRIPT AS WELL
+'''
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Y U so stupid!?')
+    parser.add_argument('-q', '--questions', help='number of questions to return', type=int, nargs=1, default=1)
+    parser.add_argument('-d', '--difficulty', help='difficulty,defined by number of choices', type=int, choices=range(2, 11),default=4)
+    parser.add_argument('-k', '--keep-them-coming', help='continue getting questions until input is other than y/Y', action='store_true')
+
+    args = parser.parse_args()
+    
+    for i in range(args.questions):
+        print(getRandomQuestion(args.difficulty))
+
+    if args.keep_them_coming:
+        userInput = ""
+        while True:
+            answer = input('\nKeep them coming? (y):')
+            if not(answer.lower() == 'y' or answer.lower() == 'yes'):
+                exit()
+            print(getRandomQuestion(args.difficulty))
+        

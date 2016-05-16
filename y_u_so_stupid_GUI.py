@@ -7,8 +7,8 @@ except ImportError:
     import tkinter as tk
     from tkinter import ttk as ttk
 
-def click_event(fun,pos):
-    return lambda: fun(pos)
+def click_event(fun):
+    return lambda: fun()
 
 class TriviaGame(tk.Frame):    
     def __init__(self, master=None):

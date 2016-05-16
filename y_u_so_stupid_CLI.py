@@ -5,8 +5,8 @@ import y_u_so_stupid
     ARGUMENT PARSING
 '''
 parser = argparse.ArgumentParser(description='Y U so stupid!?')
-parser.add_argument('-q', '--questions', help='number of questions to run', type=int, nargs=1)
-parser.add_argument('-d', '--difficulty', help='difficulty,defined by number of choices', type=int, choices=range(2, 11))
+parser.add_argument('-q', '--questions', help='number of questions to run', type=int, nargs=1, default=10)
+parser.add_argument('-d', '--difficulty', help='difficulty,defined by number of choices', type=int, choices=range(2, 11), default=4)
 
 args = parser.parse_args()
 
@@ -15,14 +15,10 @@ args = parser.parse_args()
 '''
 def playCLI():
     score = 0
-    if args.questions:
-        numberOfQuestions = args.questions[0]
-    else:
-        numberOfQuestions = 10
-    if args.difficulty:
-        difficulty = args.difficulty
-    else:
-        difficulty = 4
+    numberOfQuestions = args.questions
+    if str(type(numberOfQuestions)):
+        numberOfQuestions = numberOfQuestions[0]
+    difficulty = args.difficulty
     
     printAndFlush("\n~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
 
