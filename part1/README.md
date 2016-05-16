@@ -11,12 +11,11 @@ A python script that scans music files for metadata and organizes them by artist
 In order for everything to work properly you must have Python3 installed, and some pip packages:
 -stagger
 
-to install the packages on a Windows system:
+to install the packages simply run:
 ```
-	py -m pip install stagger
+	python -m pip install stagger
 ```
-
-to install the packages on a Linux system you can skip the "py -m" part
+Note however that depending on your OS, the command could be simple pip install <packagename> or py -m pip install <packagename>
 
 ###Run the script
 
