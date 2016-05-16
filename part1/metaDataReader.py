@@ -15,6 +15,7 @@ def metaHound(argvPath):
         ipodFolder = argvPath
     else:
         ipodFolder = os.path.join(os.getcwd(), 'ipod')
+        
     if not os.path.exists(os.path.join(os.getcwd(), 'Music')):
         os.mkdir('Music')
     root = os.path.join(os.getcwd(), 'Music')
