@@ -1,0 +1,24 @@
+Til að nota þarf að byrja á að installa stagger
+
+py -m pip install stagger
+
+Til að keyra forritið eru tvær leiðir.
+
+* Án þess að tilgreina slóð á möppuna sem á að fara í gegnum. Þá er gert ráð fyrir að mappan sé staðsett á sama stað og skriftan sjálf.
+
+```py metaDataReader.py```
+
+* Með því að senda með slóð á möppuna sem á að fara í gegnum.
+
+```py metaDataReader.py C:\\slod\\a\\moppuna\\med\\gognunum```
+
+***Keyrslan***
+Fyrst er athugað hvort það hafi verið send inn slóð á möppu. Ef svo er, þá er current working directory stillt á parent möppuna hennar. Ef það var engin slóð send inn, þá er ekki breytt current working directory. Það er svo búin til Music mappa í parent möppunni þar sem 'niðurstöðunum' verður komið fyrir.
+
+Svo er labbað í gegnum möppuna með  os.walk().
+Fyrir hvert stak sem kemur útúr því er farið í gegnum alla fæla og reynt að ná metagögnunum þeirra.
+Ef það finnst meta data eru tekin út öll óleyfileg tákn.
+Svo er búin til mappa fyrir listamanninn/hljómsveitina, ef hún er ekki til nú þegar. Inní þeirri möppu er svo búin til mappa fyrir plötuna, sé hún ekki til nú þegar og inní hana er svo settur fællinn með réttu nafni lagsins, hafi nafnið fundist og sé lagið ekki til þar nú þegar.
+Ef það finnst ekki metadata, er búin til mappa sem heitir 'unknown files' ef hún er ekki til nú þegar og fællinn færður í hana.
+
+þegar þetta er búið er svo möppunni sem gögnin voru í hent.
