@@ -1,7 +1,7 @@
 import stagger
-from stagger.id3 import *
 import os
 import sys
+from stagger.id3 import *
 
 
 def metaHound(argvPath):
