@@ -1,24 +1,44 @@
-Til að nota þarf að byrja á að installa stagger
+# Y U so stupid - A Python Movie Trivia module
 
-py -m pip install stagger
+Reykjavík University, May 2016<br>
+T-308-PRLA - The Python Programming Language<br>
+Assignment nr 5<br>
+Authors: asav13@ru.is, vedise13@ru.is
 
-Til að keyra forritið eru tvær leiðir.
+A python script that scans music files for metadata and organizes them by artists and albums.
 
-* Án þess að tilgreina slóð á möppuna sem á að fara í gegnum. Þá er gert ráð fyrir að mappan sé staðsett á sama stað og skriftan sjálf.
+## Installation and dependencies
 
+In order for everything to work properly you must have Python3 installed, and some pip packages:
+-stagger
+
+to install the packages on a Windows system:
+```
+	py -m pip install stagger
+```
+
+to install the packages on a Linux system you can skip the "py -m" part
+
+###Run the script
+
+##Without a parameter
+Run
 ```py metaDataReader.py```
+The script will assume that the folder it should go through is called *ipod* and is located in the same folder as *metaDataReader.py*. The result will be located in the same folder.
 
-* Með því að senda með slóð á möppuna sem á að fara í gegnum.
+##With a parameter
+Run
+```py metaDataReader.py C:\\path\\to\\folder\\holding\\data```
+The script will go through that folder and place the result in that folder's parent folder.
 
-```py metaDataReader.py C:\\slod\\a\\moppuna\\med\\gognunum```
 
-***Keyrslan***
-Fyrst er athugað hvort það hafi verið send inn slóð á möppu. Ef svo er, þá er current working directory stillt á parent möppuna hennar. Ef það var engin slóð send inn, þá er ekki breytt current working directory. Það er svo búin til Music mappa í parent möppunni þar sem 'niðurstöðunum' verður komið fyrir.
+###Code
+1. First we check if the program was provided with a path to a folder and set up current working directory according to that.
 
-Svo er labbað í gegnum möppuna með  os.walk().
-Fyrir hvert stak sem kemur útúr því er farið í gegnum alla fæla og reynt að ná metagögnunum þeirra.
-Ef það finnst meta data eru tekin út öll óleyfileg tákn.
-Svo er búin til mappa fyrir listamanninn/hljómsveitina, ef hún er ekki til nú þegar. Inní þeirri möppu er svo búin til mappa fyrir plötuna, sé hún ekki til nú þegar og inní hana er svo settur fællinn með réttu nafni lagsins, hafi nafnið fundist og sé lagið ekki til þar nú þegar.
-Ef það finnst ekki metadata, er búin til mappa sem heitir 'unknown files' ef hún er ekki til nú þegar og fællinn færður í hana.
+2. If there is no *Music* folder, it is created and result will then be stored there.
 
-þegar þetta er búið er svo möppunni sem gögnin voru í hent.
+3. The folder is walked through using *os.walk()*. Every file in that folder will be checked for meta-data.
+If no meta-data is found, the file will be moved to a folder called *unknown files*, located in the *Music* folder.
+If meta-data is found, title, artist and album are saved as string variables and all illegal characters removed from them, folders created if needed and then the file replaced and renamed.
+
+4. The original folder that held the data is deleted.
