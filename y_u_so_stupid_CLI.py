@@ -1,16 +1,29 @@
-import select
-import sys
-import json
+import select, sys, json, argparse
 import y_u_so_stupid
-import time
 
+'''
+    ARGUMENT PARSING
+'''
+parser = argparse.ArgumentParser(description='Y U so stupid!?')
+parser.add_argument('-q', '--questions', help='number of questions to run', type=int, nargs=1, default=10)
+parser.add_argument('-d', '--difficulty', help='difficulty,defined by number of choices', type=int, choices=range(2, 11), default=4)
+
+args = parser.parse_args()
+
+'''
+    MAIN FUNCTION
+'''
 def playCLI():
     score = 0
+    numberOfQuestions = args.questions
+    if str(type(numberOfQuestions)):
+        numberOfQuestions = numberOfQuestions[0]
+    difficulty = args.difficulty
     
-    printAndFlush("~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
+    printAndFlush("\n~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
 
-    for i in range(10):
-        question = json.loads(y_u_so_stupid.getRandomQuestion())
+    for i in range(numberOfQuestions):
+        question = json.loads(y_u_so_stupid.getRandomQuestion(difficulty))
 
         printAndFlush(question['question'])
         
@@ -19,8 +32,8 @@ def playCLI():
     
         playerAnswer = input()
         
-        while playerAnswer not in ['0','1','2','3']:
-            printAndFlush('y u so stupid..? Please enter a valid choice: 0, 1, 2 or 3')
+        while int(playerAnswer) not in range(difficulty):
+            printAndFlush('y u so stupid..? Please enter a valid choice: {0}'.format(list(range(difficulty))))
             playerAnswer = input()
         printAndFlush("")
         
@@ -31,11 +44,10 @@ def playCLI():
         else:
             printAndFlush("WRONG... y u so stupid?\nAnswer: {0}\n".format(question['answer']))
         
-    printAndFlush("Your score is: {0}/100".format(score))
+    printAndFlush("Your score is: {0}/100".format(int(score/(numberOfQuestions*10)*100)))
 
 def printAndFlush(string):
     print(string)
     sys.stdout.flush()
 
-
-
+playCLI()

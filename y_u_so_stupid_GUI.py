@@ -1,17 +1,14 @@
+import json
+import y_u_so_stupid
 try:
     import Tkinter as tk
     from Tkinter import ttk as ttk
 except ImportError:
     import tkinter as tk
     from tkinter import ttk as ttk
-    
-import time
-import json
-import y_u_so_stupid
-from PIL import Image, ImageTk
 
-def click_event(fun,pos):
-    return lambda: fun(pos)
+def click_event(fun):
+    return lambda: fun()
 
 class TriviaGame(tk.Frame):    
     def __init__(self, master=None):
@@ -23,10 +20,11 @@ class TriviaGame(tk.Frame):
         self.initGameWindow()
 
     def initGameWindow(self):
-        self.questionButtons = []
-        self.score      = 0
-        self.highscore  = 0
-        self.master.title("y u so stupid?")        
+        self.questionButtons    = []
+        self.score              = 0
+        self.highscore          = 0
+        self.master.title("y u so stupid?")
+        
         self.quitButton = tk.Button(self, text="Quit", command=self.exitGame)
         self.quitButton.configure(relief=tk.GROOVE,bg='black',fg='lightgray')
         self.quitButton.grid(row=0,column=0,sticky=tk.E)
@@ -62,7 +60,6 @@ class TriviaGame(tk.Frame):
                 b.configure(fg='grey')
             b.unbind('<Button-1>')
 
-        
         if event.widget.choice == event.widget.answer:
             self.score += 10
             self.result['text'] = "CORRECT\nu no stupid\nScore: {0}".format(self.score)
@@ -89,22 +86,22 @@ class TriviaGame(tk.Frame):
         self.result['text'] = "\n\nScore: {0}".format(self.score)
         self.retryButton.grid_forget()
         self.nextQuestion.grid_forget()
-        
 
-        question = json.loads(y_u_so_stupid.getRandomQuestion())
-        self.question['text'] = question['question']
+        question                = json.loads(y_u_so_stupid.getRandomQuestion())
+        self.question['text']   = question['question']
         
         
         for i in range(4):
-            self.questionButtons[i].choice = question['choices'][i]
-            self.questionButtons[i]['text'] = question['choices'][i]
-            self.questionButtons[i].answer = question['answer']
+            self.questionButtons[i].choice      = question['choices'][i]
+            self.questionButtons[i]['text']     = question['choices'][i]
+            self.questionButtons[i].answer      = question['answer']
             self.questionButtons[i].bind('<Button-1>', self.clicked)
             self.questionButtons[i].configure(fg='lightgray')
         
     def exitGame(self):
-        
         exit()
+        
+        
 
 root = tk.Tk()
 root.configure(bd=10, bg='#CCFFFF')
