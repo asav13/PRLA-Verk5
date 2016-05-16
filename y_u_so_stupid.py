@@ -1,101 +1,96 @@
-from pprint import pprint
-import requests
-import os
-import sys
+import requests, os, json
 from bs4 import BeautifulSoup as BS
 from random import choice
-import sys
-import json
 
-BASE_PATH       = os.path.dirname(__file__)
+_BASE_PATH       = os.path.dirname(__file__)
 
-DATA_FILE       = os.path.join(BASE_PATH,'data.txt')
-ACTORS_FILE     = os.path.join(BASE_PATH,'actors.txt')
-DIRECTORS_FILE  = os.path.join(BASE_PATH,'directors.txt')
-YEARS_FILE      = os.path.join(BASE_PATH,'years.txt')
+_DATA_FILE       = os.path.join(_BASE_PATH,'data.txt')
+_ACTORS_FILE     = os.path.join(_BASE_PATH,'actors.txt')
+_DIRECTORS_FILE  = os.path.join(_BASE_PATH,'directors.txt')
+_YEARS_FILE      = os.path.join(_BASE_PATH,'years.txt')
 
-IMDB_LIST       = r"http://www.imdb.com/chart/top?ref_=nv_mv_250_6"
-IMDB_BASE_URL   = r"http://www.imdb.com"
+_IMDB_LIST       = r"http://www.imdb.com/chart/top?ref_=nv_mv_250_6"
+_IMDB_BASE_URL   = r"http://www.imdb.com"
 
-movies          = []
-actorsPool      = []
-directorsPool   = []
-yearsPool       = []
+_movies          = []
+_actorsPool      = []
+_directorsPool   = []
+_yearsPool       = []
 
-def getActorPool():
+def _getActorPool():
     actors = set()
     
-    for m in movies:
-        for a in getActorsForMovie(m['link']):
+    for m in _movies:
+        for a in _getActorsForMovie(m['link']):
             actors.add(a)
         if len(actors) >= 100:
             break
         
     return list(actors)
 
-def getDirectorPool():
+def _getDirectorPool():
     directors = set()
     
-    for m in movies:
-        directors.add(getDirectorForMovie(m['link']))
+    for m in _movies:
+        directors.add(_getDirectorForMovie(m['link']))
         if len(directors) >= 100:
             break
         
     return list(directors)
 
-def getYearPool():
+def _getYearPool():
     years = set()
     
-    for m in movies:
+    for m in _movies:
         years.add(m['year'])
         
     return list(years)
 
-def init():
-    global movies
-    global actorsPool
-    global directorsPool
-    global yearsPool
+def _init():
+    global _movies
+    global _actorsPool
+    global _directorsPool
+    global _yearsPool
 
     try:
-        file    = open(DATA_FILE)
-        movies  = eval(file.read())
+        file    = open(_DATA_FILE)
+        _movies  = eval(file.read())
         file.close()
     except FileNotFoundError:
-        file    = open(DATA_FILE, 'w')
-        movies  = getMovies()
-        file.write(str(movies))
-        file.close()
-
-    try:
-        file        = open(ACTORS_FILE)
-        actorsPool  = list(eval(file.read()))
-    except FileNotFoundError:
-        file        = open(ACTORS_FILE, 'w')
-        actorsPool  = getActorPool()
-        file.write(str(actorsPool))
+        file    = open(_DATA_FILE, 'w')
+        _movies  = _getMovies()
+        file.write(str(_movies))
         file.close()
 
     try:
-        file            = open(DIRECTORS_FILE)
-        directorsPool   = list(eval(file.read()))
+        file        = open(_ACTORS_FILE)
+        _actorsPool  = list(eval(file.read()))
     except FileNotFoundError:
-        file            = open(DIRECTORS_FILE, 'w')
-        directorsPool   = getDirectorPool()
-        file.write(str(directorsPool))
+        file        = open(_ACTORS_FILE, 'w')
+        _actorsPool  = _getActorPool()
+        file.write(str(_actorsPool))
+        file.close()
+
+    try:
+        file            = open(_DIRECTORS_FILE)
+        _directorsPool   = list(eval(file.read()))
+    except FileNotFoundError:
+        file            = open(_DIRECTORS_FILE, 'w')
+        _directorsPool   = _getDirectorPool()
+        file.write(str(_directorsPool))
         file.close()
     
     try:
-        file        = open(YEARS_FILE)
-        yearsPool   = list(eval(file.read()))
+        file        = open(_YEARS_FILE)
+        _yearsPool   = list(eval(file.read()))
     except FileNotFoundError:
-        file        = open(YEARS_FILE, 'w')
-        yearsPool   = getYearPool()
-        file.write(str(yearsPool))
+        file        = open(_YEARS_FILE, 'w')
+        _yearsPool   = _getYearPool()
+        file.write(str(_yearsPool))
         file.close()
 
-def getMovies():
-    response    = requests.get(IMDB_LIST, headers = {'accept-language': 'en-US, en'})
+def _getMovies():
+    response    = requests.get(_IMDB_LIST, headers = {'accept-language': 'en-US, en'})
     text        = response.text
     soup        = BS(text, 'html.parser')
     movieList   = []
@@ -105,13 +100,13 @@ def getMovies():
         m['link']                   = IMDB_BASE_URL + line.find('a').attrs['href']
         m['title']                  = line.find('a').text
         m['year']                   = (line.find('span').text)[1:-1]
-        m['actors'],m['director']   = getActorsAndDirector(m['link'])
+        m['actors'],m['director']   = _getActorsAndDirector(m['link'])
         
         movieList.append(m)
 
     return movieList
 
-def getActorsForMovie(link):
+def _getActorsForMovie(link):
     text    = requests.get(link).text
     soup    = BS(text, 'html.parser')
     actors  = []
@@ -122,13 +117,13 @@ def getActorsForMovie(link):
         
     return actors
 
-def getDirectorForMovie(link):
+def _getDirectorForMovie(link):
     text    = requests.get(link).text
     soup    = BS(text, 'html.parser')
 
     return (soup.find('span', {"itemprop": "director"})).find('span', {"itemprop":"name"}).text
 
-def getActorsAndDirector(link):
+def _getActorsAndDirector(link):
     text    = requests.get(link).text
     soup    = BS(text, 'html.parser')
     actors  = []
@@ -141,15 +136,15 @@ def getActorsAndDirector(link):
     return actors,director
 
 def getRandomQuestion(nrOfChoices=4):
-    if not (movies and actorsPool and directorsPool and yearsPool):
-        init()  # Making sure everything is set up, none of these
+    if not (_movies and _actorsPool and _directorsPool and _yearsPool):
+        _init()  # Making sure everything is set up, none of these
                 # variables should be empty
     
     # Get random movie
-    movie        = choice(movies)
-    group        = {'a': ['actors', actorsPool, 'Who of the following starred in {0}?'],
-                    'd': ['director', directorsPool, 'Who was the director of {0}?'],
-                    'y': ['year', yearsPool, 'When was the movie {0} premeried?']}
+    movie        = choice(_movies)
+    group        = {'a': ['actors', _actorsPool, 'Who of the following starred in {0}?'],
+                    'd': ['director', _directorsPool, 'Who was the director of {0}?'],
+                    'y': ['year', _yearsPool, 'When was the movie {0} premeried?']}
     
     choices      = []
     questionType = choice(['a','d','y'])   # a for actor, d for director, y for year

@@ -1,16 +1,12 @@
-import select
-import sys
-import json
+import select, sys, json, argparse
 import y_u_so_stupid
-import time
-import argparse
 
 '''
     ARGUMENT PARSING
 '''
 parser = argparse.ArgumentParser(description='Y U so stupid!?')
 parser.add_argument('-q', '--questions', help='number of questions to run', type=int, nargs=1)
-parser.add_argument('-d', '--difficulty', help='difficulty,defined by number of choices', type=int, choices=range(2, 10))
+parser.add_argument('-d', '--difficulty', help='difficulty,defined by number of choices', type=int, choices=range(2, 11))
 
 args = parser.parse_args()
 
@@ -28,7 +24,7 @@ def playCLI():
     else:
         difficulty = 4
     
-    printAndFlush("~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
+    printAndFlush("\n~Welcome to 'y u so stupid?'~\nNow, don't be stupid mkey?\n\nAre you ready?\n...\n")
 
     for i in range(numberOfQuestions):
         question = json.loads(y_u_so_stupid.getRandomQuestion(difficulty))
@@ -40,8 +36,8 @@ def playCLI():
     
         playerAnswer = input()
         
-        while playerAnswer not in ['0','1','2','3']:
-            printAndFlush('y u so stupid..? Please enter a valid choice: 0, 1, 2 or 3')
+        while int(playerAnswer) not in range(difficulty):
+            printAndFlush('y u so stupid..? Please enter a valid choice: {0}'.format(list(range(difficulty))))
             playerAnswer = input()
         printAndFlush("")
         
