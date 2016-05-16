@@ -16,7 +16,7 @@ args = parser.parse_args()
 def playCLI():
     score = 0
     numberOfQuestions = args.questions
-    if str(type(numberOfQuestions)):
+    if type(numberOfQuestions) == type([]):
         numberOfQuestions = numberOfQuestions[0]
     difficulty = args.difficulty
     
