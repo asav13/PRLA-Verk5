@@ -1,5 +1,4 @@
-﻿# Y U so stupid - A Python Movie Trivia module
-
+﻿# Y U so stupid - A Python Meta-Data Reader
 Reykjavík University, May 2016<br>
 T-308-PRLA - The Python Programming Language<br>
 Assignment nr 5<br>
