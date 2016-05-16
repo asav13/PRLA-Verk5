@@ -5,9 +5,16 @@ import sys
 
 
 def metaHound(argvPath):
+    #ef það er sendur parametri inní fallið þá er það slóðin a möppuna
+    #sem á að fara i gegnum.
+    #ef ekki er sendur parameter er reiknað með að mappan sem á að fara
+    #í gegnum sé í cwd.
     if argvPath != '':
         os.chdir(argvPath)
-    ipodFolder = os.path.join(os.getcwd(), 'ipod')
+        os.chdir('..')
+        ipodFolder = argvPath
+    else:
+        ipodFolder = os.path.join(os.getcwd(), 'ipod')
     if not os.path.exists(os.path.join(os.getcwd(), 'Music')):
         os.mkdir('Music')
     root = os.path.join(os.getcwd(), 'Music')
