@@ -180,9 +180,17 @@ if __name__ == '__main__':
     parser.add_argument('-k', '--keep-them-coming', help='continue getting questions until input is other than y/Y', action='store_true')
 
     args = parser.parse_args()
+
+    difficulty  = args.difficulty
+    questions   = args.questions
+
+    if type(difficulty) == type([]):
+        difficulty = difficulty[0]
+    if type(questions) == type([]):
+        questions = questions[0]
     
-    for i in range(args.questions):
-        print(getRandomQuestion(args.difficulty))
+    for i in range(questions):
+        print(getRandomQuestion(difficulty))
 
     if args.keep_them_coming:
         userInput = ""
