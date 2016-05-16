@@ -82,7 +82,7 @@ def _init():
     
     try:
         file        = open(_YEARS_FILE)
-        _yearsPool   = list(eval(file.read().encode('ascii', 'ignore')))
+        _yearsPool   = list(eval(file.read()))
     except FileNotFoundError:
         file        = open(_YEARS_FILE, 'w')
         _yearsPool   = _getYearPool()
@@ -97,7 +97,7 @@ def _getMovies():
     
     for line in soup.findAll('td', {"class": "titleColumn"}):
         m = dict()
-        m['link']                   = IMDB_BASE_URL + line.find('a').attrs['href']
+        m['link']                   = _IMDB_BASE_URL + line.find('a').attrs['href']
         m['title']                  = line.find('a').text
         m['year']                   = (line.find('span').text)[1:-1]
         m['actors'],m['director']   = _getActorsAndDirector(m['link'])
@@ -164,9 +164,10 @@ def getRandomQuestion(nrOfChoices=4):
         choices.append(filler)
         
     choices.insert(choice(range(3)), correctAnswer)
-    return json.dumps({'question':group[questionType][2].format(movie['title']),
+    jsonObj = json.dumps({'question':group[questionType][2].format(movie['title']),
             'choices': choices,
             'answer': correctAnswer})
+    return jsonObj
 
 '''
     TO BE ABLE TO USE THE MODULE AS A SCRIPT AS WELL
@@ -187,7 +188,7 @@ if __name__ == '__main__':
         userInput = ""
         while True:
             answer = input('\nKeep them coming? (y):')
-            if not(answer.lower() == 'y' or answer.lower() == 'yes'):
+            if not(str(answer).lower() == 'y' or answer.lower() == 'yes'):
                 exit()
             print(getRandomQuestion(args.difficulty))
         
