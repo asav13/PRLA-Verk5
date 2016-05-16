@@ -53,38 +53,38 @@ def _init():
     global _yearsPool
 
     try:
-        file    = open(_DATA_FILE)
+        file    = open(_DATA_FILE, encoding='ISO-8859-1')
         _movies  = eval(file.read())
         file.close()
     except FileNotFoundError:
-        file    = open(_DATA_FILE, 'w')
+        file    = open(_DATA_FILE, 'w', encoding='ISO-8859-1')
         _movies  = _getMovies()
         file.write(str(_movies))
         file.close()
 
     try:
-        file        = open(_ACTORS_FILE)
+        file        = open(_ACTORS_FILE, encoding='ISO-8859-1')
         _actorsPool  = list(eval(file.read()))
     except FileNotFoundError:
-        file        = open(_ACTORS_FILE, 'w')
+        file        = open(_ACTORS_FILE, 'w', encoding='ISO-8859-1')
         _actorsPool  = _getActorPool()
         file.write(str(_actorsPool))
         file.close()
 
     try:
-        file            = open(_DIRECTORS_FILE)
+        file            = open(_DIRECTORS_FILE, encoding='ISO-8859-1')
         _directorsPool   = list(eval(file.read()))
     except FileNotFoundError:
-        file            = open(_DIRECTORS_FILE, 'w')
+        file            = open(_DIRECTORS_FILE, 'w', encoding='ISO-8859-1')
         _directorsPool   = _getDirectorPool()
         file.write(str(_directorsPool))
         file.close()
     
     try:
-        file        = open(_YEARS_FILE)
+        file        = open(_YEARS_FILE, encoding='ISO-8859-1')
         _yearsPool   = list(eval(file.read()))
     except FileNotFoundError:
-        file        = open(_YEARS_FILE, 'w')
+        file        = open(_YEARS_FILE, 'w', encoding='ISO-8859-1')
         _yearsPool   = _getYearPool()
         file.write(str(_yearsPool))
         file.close()
