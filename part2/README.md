@@ -43,7 +43,7 @@ getRandomQuestion()
 The method takes as a parameter the number of choices to return with the question, if no
 parameter is specified the default number of choices is 4.
 
-The methor returns a json object on the following form:
+The method returns a json object on the following form:
 
 {
 	"question": "Who was the director of La Haine?", 
